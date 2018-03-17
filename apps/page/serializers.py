@@ -9,7 +9,7 @@ from rest_framework import serializers
 from apps.core.serializers import XRoleSerializer
 
 
-from .models import Page
+from .models import Page, Link, Comment
 
 
 class PageSerializer(XRoleSerializer):
@@ -19,4 +19,28 @@ class PageSerializer(XRoleSerializer):
         fields = "__all__"
         anonymous_forbidden_fields = [
             "need_key", "password", "allow_visit", "allow_comment"
+        ]
+
+class NestedPageSerializer(serializers.Serializer):
+    url = serializers.CharField()
+
+
+class LinkSerializer(XRoleSerializer):
+
+    class Meta:
+        model = Link
+        fields = "__all__"
+        anonymous_forbidden_fields = []
+
+
+class CommentSerializer(XRoleSerializer):
+    page =  NestedPageSerializer(required=False)
+
+    class Meta:
+        model = Comment
+        fields = [
+            "page", "email", "nickname", "content", "to", "create_time"
+        ]
+        anonymous_forbidden_fields = [
+            "email"
         ]

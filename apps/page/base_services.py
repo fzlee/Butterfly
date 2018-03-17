@@ -6,18 +6,23 @@
 
 """
 from apps.core.services import BaseService
-from .models import Page
-from .serializers import PageSerializer
+from .models import Page, Comment, Link, Tag
+from .serializers import PageSerializer, LinkSerializer, CommentSerializer
 from .filters import PageFilter
 
 
 class BasePageService(BaseService):
 
     _INTERNAL_SERIALIZERS = {
-        "page": PageSerializer
+        "page": PageSerializer,
+        "link": LinkSerializer,
+        "comment": CommentSerializer
     }
     _INTERNAL_MODELS = {
-        "page": Page
+        "page": Page,
+        "tag": Tag,
+        "link": Link,
+        "comment": Comment
     }
     _INTERNAL_FILTERS = {
         "page": PageFilter

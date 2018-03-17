@@ -15,6 +15,7 @@ from apps.user.services import UserService
 from apps.user.permissions import login_required
 from .services import PageService
 from .permissions import validate_request
+from helpers import cached
 
 
 class PageViewSets(viewsets.GenericViewSet, XListModelMixin):
@@ -35,3 +36,9 @@ class PageViewSets(viewsets.GenericViewSet, XListModelMixin):
     def retrieve(self, request, url):
         serializer = PageService.get_serializer(instance=request.page, name="page")
         return XResponse(data=serializer.data)
+
+    @list_route()
+    def sidebar(self, request):
+        return XResponse(
+            data=PageService.generate_sidebar()
+        )

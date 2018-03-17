@@ -35,3 +35,45 @@ class Page(XModel):
 
     class Meta:
         db_table = "page"
+
+
+class Link(XModel):
+
+    name = models.CharField(max_length=64)
+    href = models.CharField(max_length=1024)
+    description = models.CharField(max_length=64)
+    create_time = models.DateTimeField(auto_now_add=True)
+    display = models.BooleanField()
+
+    class Meta:
+        db_table = "link"
+
+
+class Comment(XModel):
+
+    page = models.ForeignKey(Page, related_name="comments", on_delete=models.CASCADE)
+    email = models.CharField(max_length=64)
+    nickname = models.CharField(max_length=20)
+    content = models.CharField(max_length=1024)
+    parent_comment = models.ForeignKey(
+        'self',
+        null=True,
+        related_name="sub_comments",
+        on_delete=models.CASCADE
+    )
+    to = models.CharField(max_length=20, null=True)
+    create_time = models.DateTimeField(auto_now_add=True)
+    ip = models.CharField(max_length=64)
+    website = models.CharField(max_length=64)
+
+    class Meta:
+        db_table = "comment"
+
+
+class Tag(XModel):
+
+    name = models.CharField(max_length=64)
+    post = models.ForeignKey(Page, related_name="sub_tags", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "tag"
