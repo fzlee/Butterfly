@@ -39,7 +39,9 @@ INSTALLED_APPS = [
 ]
 
 LOCAL_APPS = [
-    "apps.user"
+    "rest_framework",
+    "apps.user",
+    "apps.page"
 ]
 
 INSTALLED_APPS += LOCAL_APPS
