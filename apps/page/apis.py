@@ -15,7 +15,7 @@ from apps.user.services import UserService
 from apps.user.permissions import login_required
 from .services import PageService
 from .permissions import validate_request
-from helpers import cached
+from helpers import cached, parse_size_and_page
 
 
 class PageViewSets(viewsets.GenericViewSet, XListModelMixin):
@@ -42,3 +42,17 @@ class PageViewSets(viewsets.GenericViewSet, XListModelMixin):
         return XResponse(
             data=PageService.generate_sidebar()
         )
+
+    @list_route()
+    def preview(self, request):
+        pages = PageService.get_pages().order_by("-pk")
+
+        size, page = parse_size_and_page(request)
+        pages = pages[(page - 1) * size: page * size]
+
+        serializer = PageService.get_serializer(name="page", instance=pages, many=True)
+        pages = serializer.data
+        for page in pages:
+            page["content"] = page["content"][:200]
+
+        return XResponse(data=pages)
