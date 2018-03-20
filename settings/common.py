@@ -125,3 +125,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+PAGE_SIZE = 12
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+       'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    "UNAUTHENTICATED_USER": "apps.core.models.XAnonymousUser",
+    "DEFAULT_PAGINATION_CLASS": "apps.core.pagination.XPagination",
+    "EXCEPTION_HANDLER": "apps.core.views.xexception_handler"
+}

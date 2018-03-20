@@ -12,7 +12,7 @@ from rest_framework import routers
 
 
 router = routers.SimpleRouter(trailing_slash=False)
-router.register("pages", apis.PageViewSets, base_name="pages")
+router.register("articles", apis.ArticleViewSets, base_name="articles")
 
 urlpatterns = [
     url(r"^", include(router.urls)),

@@ -18,7 +18,7 @@ from .permissions import validate_request
 from helpers import cached, parse_size_and_page
 
 
-class PageViewSets(viewsets.GenericViewSet, XListModelMixin):
+class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
     lookup_field = "url"
 
     # @login_required
