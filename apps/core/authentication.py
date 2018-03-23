@@ -48,7 +48,7 @@ class XCookieAuthentication(BaseAuthentication):
     """
     auth_model = AuthToken
 
-    def authenticate(self, request, cookie_name="g.token"):
+    def authenticate(self, request, cookie_name="b.token"):
         key = request.COOKIES.get(cookie_name, None)
         if not key:
             return None

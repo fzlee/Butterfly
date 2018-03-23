@@ -49,5 +49,3 @@ class LogoutView(LazyAuthView):
         url = request.GET.get("url", "/")
         response = redirect(url)
         return UserService.clear_login_credential(request, response)
-
-

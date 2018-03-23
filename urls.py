@@ -22,4 +22,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r"^api/", include('apps.user.urls_account')),
     url(r"^api/", include('apps.page.urls')),
+    url(r"", include('apps.page.urls_page')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

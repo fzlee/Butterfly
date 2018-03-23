@@ -5,7 +5,10 @@
     ~~~~~~~~~~
 
 """
+import markdown2
 from django.db import models
+
+
 from apps.core.models import XModel
 
 
@@ -35,6 +38,13 @@ class Page(XModel):
 
     class Meta:
         db_table = "page"
+
+    @property
+    def html_content(self):
+        if self.editor == "html":
+            return self.content
+
+        return markdown2.markdown(self.content)
 
 
 class Link(XModel):
