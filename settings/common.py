@@ -128,6 +128,9 @@ STATIC_URL = '/static/'
 
 PAGE_SIZE = 12
 
+AUTH_USER_MODEL = 'user.User'
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
