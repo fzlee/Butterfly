@@ -19,9 +19,14 @@ def validate_request(target):
             if target == "page":
                 url = kwargs.get("url")
                 request.page = BasePageService.get_page(url=url)
-                print(url)
                 if not request.page:
                     raise XAPI404Error(code=codes.UNKNOWN_RESOURCE)
+
+            elif target == "comment":
+                pk = kwargs.get("pk")
+                request.comment = BasePageService.get_comment(pk=pk)
+                if not request.comment:
+                    raise XAPI404Error
             else:
                 raise Exception("Unhandled permission check")
             return func(self, request, *args, **kwargs)

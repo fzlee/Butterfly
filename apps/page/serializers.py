@@ -24,6 +24,7 @@ class PageSerializer(XRoleSerializer):
 
 class NestedPageSerializer(serializers.Serializer):
     url = serializers.CharField()
+    title = serializers.CharField()
 
 
 class LinkSerializer(XRoleSerializer):
@@ -40,7 +41,7 @@ class CommentSerializer(XRoleSerializer):
     class Meta:
         model = Comment
         fields = [
-            "page", "email", "nickname", "content", "to", "create_time"
+            "id", "page", "email", "nickname", "content", "to", "create_time"
         ]
         anonymous_forbidden_fields = [
             "email"

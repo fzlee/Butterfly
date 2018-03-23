@@ -88,3 +88,23 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
 
         serializer = PageService.get_serializer(name="page", instance=page)
         return XResponse(data=serializer.data)
+
+
+class CommentViewSets(viewsets.GenericViewSet, XListModelMixin):
+    lookup_fiels = "pk"
+
+    @login_required
+    def list(self, request):
+        queryset = PageService.get_comments().order_by("-pk")
+        return self.flexible_list(
+            request,
+            queryset,
+            pagination=True,
+            serializer_class=PageService.get_serializer_class("comment"),
+        )
+
+    @validate_request("comment")
+    @login_required
+    def destroy(self, request, pk):
+        request.comment.delete()
+        return XResponse()
