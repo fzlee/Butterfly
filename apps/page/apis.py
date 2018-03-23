@@ -56,3 +56,29 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
             page["content"] = page["content"][:200]
 
         return XResponse(data=pages)
+
+    @list_route(methods=["post"])
+    def in_place(self, request):
+        pk = request.data.get("id", None)
+        url = request.data.get("url", None)
+        article = PageService.get_page(url=url)
+
+        if article and article.pk != pk:
+            return XResponse(data={"in_place": True})
+
+        return XResponse(data={"in_place": False})
+
+    @list_route(methods=["put"])
+    def save(self, request):
+        data = request.data
+        if "id" not in data:
+            page = PageService.create_page(data)
+            serializer = PageService.get_serializer(name="page", instance=page)
+            return XResponse(data=serializer.data)
+
+        page = PageService.get_page(pk=data["id"])
+        data.pop("id")
+        page = PageService.update_page(page, data)
+
+        serializer = PageService.get_serializer(name="page", instance=page)
+        return XResponse(data=serializer.data)

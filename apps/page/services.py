@@ -11,6 +11,7 @@
 from django.db import connection
 
 from .base_services import BasePageService
+from .models import Page
 from settings import app_setting
 from helpers import cached
 
@@ -62,3 +63,31 @@ class PageService(BasePageService):
             cursor.execute("select name from tag group by name order by count(name) desc")
             records = cursor.fetchall()
             return [i[0] for i in records]
+
+    @classmethod
+    def update_page(cls, page, data):
+        """
+        """
+        data.pop("id", None)
+
+        for key, value in data.items():
+            setattr(page, key, value)
+
+        if not page.tags.startswith(","):
+            page.tags = "," + page.tags
+        if not page.tags.endswith(","):
+            page.tags = page.tags + ","
+
+        page.save()
+        return page
+
+    @classmethod
+    def create_page(cls, data):
+        page = Page.objects.create(**data)
+        if not page.tags.startswith(","):
+            page.tags = "," + page.tags
+        if not page.tags.endswith(","):
+            page.tags = page.tags + ","
+
+        page.save()
+        return page

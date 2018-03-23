@@ -17,9 +17,10 @@ class PageSerializer(XRoleSerializer):
     class Meta:
         model = Page
         fields = "__all__"
-        anonymous_forbidden_fields = [
-            "need_key", "password", "allow_visit", "allow_comment"
-        ]
+        # anonymous_forbidden_fields = [
+        #     "need_key", "password", "allow_visit", "allow_comment"
+        # ]
+        anonymous_forbidden_fields = []
 
 class NestedPageSerializer(serializers.Serializer):
     url = serializers.CharField()
