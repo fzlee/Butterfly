@@ -11,7 +11,6 @@ import logging
 from rest_framework.authentication import (BaseAuthentication, get_authorization_header)
 
 from apps.user.models import AuthToken
-from apps.core.globals import g
 from . import codes
 from .exceptions import XAuthenticationFailed
 
@@ -41,8 +40,6 @@ class XTokenAuthentication(BaseAuthentication):
         elif not token.user.activated:
             raise XAuthenticationFailed(code=codes.INVALID_ACCOUNT)
 
-        # 注入user
-        g.user = token.user
         return token.user, token
 
 
@@ -62,5 +59,4 @@ class XCookieAuthentication(BaseAuthentication):
         elif not token.user.activated:
             raise XAuthenticationFailed(code=codes.INACTIVE_ACCOUNT)
 
-        g.user = token.user
         return token.user, token

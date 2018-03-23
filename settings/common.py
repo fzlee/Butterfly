@@ -138,5 +138,9 @@ REST_FRAMEWORK = {
     ),
     "UNAUTHENTICATED_USER": "apps.core.models.XAnonymousUser",
     "DEFAULT_PAGINATION_CLASS": "apps.core.pagination.XPagination",
-    "EXCEPTION_HANDLER": "apps.core.views.xexception_handler"
+    "EXCEPTION_HANDLER": "apps.core.views.xexception_handler",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "apps.core.authentication.XTokenAuthentication",
+        "apps.core.authentication.XCookieAuthentication",
+    ),
 }

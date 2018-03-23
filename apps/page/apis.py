@@ -43,6 +43,12 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
             data=PageService.generate_sidebar()
         )
 
+    @validate_request(target="page")
+    @login_required
+    def destroy(self, request, url):
+        request.page.delete()
+        return XResponse()
+
     @list_route()
     def preview(self, request):
         pages = PageService.get_pages().order_by("-pk")
