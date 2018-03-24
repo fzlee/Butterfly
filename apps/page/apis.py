@@ -7,15 +7,13 @@
 """
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
-from django.http.response import HttpResponse
 
-from apps.core.responses import XResponse, XResult
-from apps.core.viewsets import XListModelMixin, XUpdateModelMixin
-from apps.user.services import UserService
+from apps.core.responses import XResponse
+from apps.core.viewsets import XListModelMixin
 from apps.user.permissions import login_required
 from .services import PageService
 from .permissions import validate_request
-from helpers import cached, parse_size_and_page
+from helpers import parse_size_and_page, get_client_ip
 
 
 class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
@@ -73,6 +71,18 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
             return XResponse(data={"in_place": True})
 
         return XResponse(data={"in_place": False})
+
+    @detail_route(methods=["get", "post"])
+    @validate_request(target="page")
+    def comments(self, request, url):
+        if request.method == "GET":
+            comments = PageService.get_comments(page_id=request.page.pk).order_by("pk")
+            serializer  =PageService.get_serializer("comment", instance=comments, many=True)
+            return XResponse(data=serializer.data)
+
+        if request.page.allow_comment and request.page.allow_visit:
+            PageService.create_comment(request.page, request.data, get_client_ip(request))
+        return XResponse()
 
     @list_route(methods=["put"])
     def save(self, request):

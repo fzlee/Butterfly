@@ -11,7 +11,7 @@
 from django.db import connection
 
 from .base_services import BasePageService
-from .models import Page
+from .models import Page, Comment
 from settings import app_setting
 from helpers import cached
 
@@ -91,3 +91,31 @@ class PageService(BasePageService):
 
         page.save()
         return page
+
+    @classmethod
+    def create_comment(cls, page, data, ip=""):
+        """
+        data = {
+            "nickname": "",
+            "comment_id": None,
+            "website": "",
+            "email": ""
+        }
+        """
+        if data.get("comment_id", None):
+            comment = cls.get_comment(pk=data["comment_id"])
+            to = comment.nickname
+        else:
+            comment = None
+            to = ""
+
+        Comment.objects.create(
+            page=page,
+            email=data.get("email", "").strip(),
+            nickname=data.get("nickname").strip(),
+            website=data.get("website", ""),
+            content=data.get("content"),
+            parent_comment=comment,
+            ip=ip,
+            to=to
+        )
