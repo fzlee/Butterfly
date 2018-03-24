@@ -28,6 +28,14 @@ class PagePreviewSerializer(serializers.ModelSerializer):
             "url", "title", "tags", "preview", "need_key"
         ]
 
+class PageMetaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Page
+        fields = [
+            "url", "title", "tags", "content", "create_time", "need_key"
+        ]
+
 
 class NestedPageSerializer(serializers.Serializer):
     url = serializers.CharField()

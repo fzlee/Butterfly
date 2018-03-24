@@ -33,6 +33,12 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
             filter_class=PageService.get_filter_class("page")
         )
 
+    @validate_request(target="page")
+    @login_required
+    def retrieve(self, request, url):
+        serializer = PageService.get_serializer(instance=request.page, name="page")
+        return XResponse(data=serializer.data)
+
     @list_route()
     def preview(self, request):
         queryset = PageService.get_pages(allow_visit=True).order_by("-pk")
@@ -43,10 +49,24 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
             serializer_class=PageService.get_serializer_class("page_preview"),
         )
 
+    @detail_route(methods=["get", "post"])
     @validate_request(target="page")
-    def retrieve(self, request, url):
-        serializer = PageService.get_serializer(instance=request.page, name="page")
-        return XResponse(data=serializer.data)
+    def meta(self, request, url):
+        if not request.page.allow_visit:
+            return XResponse(data={})
+
+        if request.method == "GET":
+            serializer = PageService.get_serializer(name="page_meta", instance=request.page)
+            data = serializer.data
+            if request.page.need_key:
+                data.pop("content", None)
+            return XResponse(data=data)
+
+        password = request.data.get("password")
+        if request.page.password == password:
+            serializer = PageService.get_serializer(name="page_meta", instance=request.page)
+            return XResponse(data=serializer.data)
+        return XResponse(success=False, message="密码错误")
 
     @list_route()
     def sidebar(self, request):
@@ -92,6 +112,7 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
         return XResponse()
 
     @list_route(methods=["put"])
+    @login_required
     def save(self, request):
         data = request.data
         if "id" not in data:
