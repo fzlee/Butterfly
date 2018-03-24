@@ -15,6 +15,7 @@ router = routers.SimpleRouter(trailing_slash=False)
 router.register("articles", apis.ArticleViewSets, base_name="articles")
 router.register("comments", apis.CommentViewSets, base_name="comments")
 router.register("links", apis.LinkViewSets, base_name="links")
+router.register("medias", apis.MediaViewSets, base_name="medias")
 
 urlpatterns = [
     url(r"^", include(router.urls)),

@@ -5,9 +5,11 @@
     ~~~~~~~~~~
 
 """
+import os
+
 import markdown2
 from django.db import models
-
+from django.conf import settings
 
 from apps.core.models import XModel
 
@@ -87,3 +89,25 @@ class Tag(XModel):
 
     class Meta:
         db_table = "tag"
+
+
+class Media(XModel):
+
+    fileid = models.CharField(max_length=64, unique=True)
+    filename = models.CharField(max_length=64)
+    # For a give filename , there could be multi file exits
+    version = models.IntegerField(default=0)
+    content_type = models.CharField(max_length=32)
+    size = models.IntegerField()
+    create_time = models.DateTimeField(auto_now_add=True)
+    display = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "media"
+
+    def get_filepath(self):
+        return os.path.join(settings.MEDIA_ROOT, self.local_filename)
+
+    @property
+    def local_filename(self):
+        return self.filename

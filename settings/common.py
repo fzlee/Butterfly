@@ -144,3 +144,6 @@ REST_FRAMEWORK = {
         "apps.core.authentication.XCookieAuthentication",
     ),
 }
+
+
+MEDIA_ROOT = BASE_DIR + "/media"

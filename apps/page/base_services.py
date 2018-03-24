@@ -6,8 +6,8 @@
 
 """
 from apps.core.services import BaseService
-from .models import Page, Comment, Link, Tag
-from .serializers import PageSerializer, LinkSerializer, CommentSerializer
+from .models import Page, Comment, Link, Tag, Media
+from .serializers import PageSerializer, LinkSerializer, CommentSerializer, MediaSerializer
 from .filters import PageFilter
 
 
@@ -16,13 +16,15 @@ class BasePageService(BaseService):
     _INTERNAL_SERIALIZERS = {
         "page": PageSerializer,
         "link": LinkSerializer,
-        "comment": CommentSerializer
+        "comment": CommentSerializer,
+        "media": MediaSerializer
     }
     _INTERNAL_MODELS = {
         "page": Page,
         "tag": Tag,
         "link": Link,
-        "comment": Comment
+        "comment": Comment,
+        "media": Media
     }
     _INTERNAL_FILTERS = {
         "page": PageFilter

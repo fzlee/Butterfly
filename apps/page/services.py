@@ -8,12 +8,15 @@
     ~~~~~~~~~~
 
 """
+import os
+
 from django.db import connection
+from django.conf import settings
 
 from .base_services import BasePageService
-from .models import Page, Comment, Link
+from .models import Page, Comment, Link, Media
 from settings import app_setting
-from helpers import cached
+from helpers import cached, generate_media_id
 
 
 class PageService(BasePageService):
@@ -127,4 +130,30 @@ class PageService(BasePageService):
             href=data["href"],
             description=data["description"],
             display=True
+        )
+
+
+    @classmethod
+    def create_media(cls, file, filename, content_type):
+        path = os.path.join(settings.MEDIA_ROOT, filename)
+        with open(path, "wb") as fp:
+            for chunk in file.chunks():
+                fp.write(chunk)
+
+        size = os.path.getsize(path)
+
+        media = PageService.get_media(filename=filename)
+        if media:
+            media.size = size
+            media.version += 1
+            media.content_type = media.content_type
+            media.save()
+            return
+
+        Media.objects.create(
+            fileid=generate_media_id(),
+            filename=filename,
+            size=size,
+            version=0,
+            content_type=content_type,
         )

@@ -20,6 +20,10 @@ def generate_user_id():
     return generate_id(8, header="u")
 
 
+def generate_media_id():
+    return generate_id(20)
+
+
 class cached(object):
     def __init__(self, *args, **kwargs):
         self.cached_function_responses = {}

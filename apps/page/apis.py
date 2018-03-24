@@ -5,12 +5,14 @@
     ~~~~~~~~~~
 
 """
+import os
+
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 
 from apps.core.responses import XResponse
 from apps.core.viewsets import XListModelMixin
-from apps.core.exceptions import XPermissionDenied
+from apps.core.exceptions import XPermissionDenied, XAPI404Error
 from apps.user.permissions import login_required
 from .services import PageService
 from .permissions import validate_request
@@ -160,4 +162,40 @@ class LinkViewSets(viewsets.GenericViewSet, XListModelMixin):
     @login_required
     def create(self, request):
         PageService.create_link(request.data)
+        return XResponse()
+
+class MediaViewSets(viewsets.GenericViewSet, XListModelMixin):
+
+    @login_required
+    def list(self, request):
+        queryset = PageService.get_medias().order_by("-pk")
+        return self.flexible_list(
+            request,
+            queryset,
+            pagination=True,
+            serializer_class=PageService.get_serializer_class("media")
+        )
+
+    @login_required
+    @list_route(methods=["post"])
+    def upload(self, request):
+        file = request.FILES["file"]
+        name = request.FILES["file"].name
+        content_type = file.content_type
+        PageService.create_media(file, name, content_type)
+        return XResponse()
+
+    @login_required
+    def destroy(self, request, pk):
+        media = PageService.get_media(pk=pk)
+        if not media:
+            raise XAPI404Error
+
+        path = media.get_filepath()
+        try:
+            os.remove(path)
+        except:
+            pass
+
+        media.delete()
         return XResponse()

@@ -9,7 +9,7 @@ from rest_framework import serializers
 from apps.core.serializers import XRoleSerializer
 
 
-from .models import Page, Link, Comment
+from .models import Page, Link, Comment, Media
 
 
 class PageSerializer(XRoleSerializer):
@@ -46,3 +46,11 @@ class CommentSerializer(XRoleSerializer):
         anonymous_forbidden_fields = [
             "email"
         ]
+
+
+class MediaSerializer(XRoleSerializer):
+
+    class Meta:
+        model = Media
+        fields = "__all__"
+        anonymous_forbidden_fields = []
