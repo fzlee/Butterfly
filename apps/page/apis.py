@@ -10,6 +10,7 @@ from rest_framework.decorators import list_route, detail_route
 
 from apps.core.responses import XResponse
 from apps.core.viewsets import XListModelMixin
+from apps.core.exceptions import XPermissionDenied
 from apps.user.permissions import login_required
 from .services import PageService
 from .permissions import validate_request
@@ -62,6 +63,7 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
         return XResponse(data=pages)
 
     @list_route(methods=["post"])
+    @login_required
     def in_place(self, request):
         pk = request.data.get("id", None)
         url = request.data.get("url", None)
@@ -75,12 +77,19 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
     @detail_route(methods=["get", "post"])
     @validate_request(target="page")
     def comments(self, request, url):
-        if request.method == "GET":
-            comments = PageService.get_comments(page_id=request.page.pk).order_by("pk")
-            serializer  =PageService.get_serializer("comment", instance=comments, many=True)
-            return XResponse(data=serializer.data)
 
-        if request.page.allow_comment and request.page.allow_visit:
+        if not request.page.allow_visit:
+            raise XPermissionDenied
+
+        if request.method == "GET":
+            if request.page.allow_comment:
+                comments = PageService.get_comments(page_id=request.page.pk).order_by("pk")
+                serializer = PageService.get_serializer("comment", instance=comments, many=True)
+                return XResponse(data=serializer.data)
+            else:
+                return XResponse(data=[])
+
+        if request.page.allow_comment:
             PageService.create_comment(request.page, request.data, get_client_ip(request))
         return XResponse()
 
