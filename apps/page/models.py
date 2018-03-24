@@ -48,6 +48,15 @@ class Page(XModel):
 
         return markdown2.markdown(self.content)
 
+    @property
+    def preview(self):
+        if self.url == "reverse-engineering-on-wechat":
+            print(self.need_key)
+        if self.need_key:
+            return ""
+        else:
+            return self.content[:200]
+
 
 class Link(XModel):
 

@@ -16,13 +16,13 @@ from apps.core.exceptions import XPermissionDenied, XAPI404Error
 from apps.user.permissions import login_required
 from .services import PageService
 from .permissions import validate_request
-from helpers import parse_size_and_page, get_client_ip
+from helpers import get_client_ip
 
 
 class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
     lookup_field = "url"
 
-    # @login_required
+    @login_required
     def list(self, request):
         queryset = PageService.get_pages().order_by("-pk")
         return self.flexible_list(
@@ -31,6 +31,16 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
             pagination=True,
             serializer_class=PageService.get_serializer_class("page"),
             filter_class=PageService.get_filter_class("page")
+        )
+
+    @list_route()
+    def preview(self, request):
+        queryset = PageService.get_pages(allow_visit=True).order_by("-pk")
+        return self.flexible_list(
+            request,
+            queryset,
+            pagination=True,
+            serializer_class=PageService.get_serializer_class("page_preview"),
         )
 
     @validate_request(target="page")
@@ -49,20 +59,6 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
     def destroy(self, request, url):
         request.page.delete()
         return XResponse()
-
-    @list_route()
-    def preview(self, request):
-        pages = PageService.get_pages().order_by("-pk")
-
-        size, page = parse_size_and_page(request)
-        pages = pages[(page - 1) * size: page * size]
-
-        serializer = PageService.get_serializer(name="page", instance=pages, many=True)
-        pages = serializer.data
-        for page in pages:
-            page["content"] = page["content"][:200]
-
-        return XResponse(data=pages)
 
     @list_route(methods=["post"])
     @login_required
