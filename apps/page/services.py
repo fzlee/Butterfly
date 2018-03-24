@@ -11,7 +11,7 @@
 from django.db import connection
 
 from .base_services import BasePageService
-from .models import Page, Comment
+from .models import Page, Comment, Link
 from settings import app_setting
 from helpers import cached
 
@@ -118,4 +118,13 @@ class PageService(BasePageService):
             parent_comment=comment,
             ip=ip,
             to=to
+        )
+
+    @classmethod
+    def create_link(cls, data):
+        Link.objects.create(
+            name=data["name"],
+            href=data["href"],
+            description=data["description"],
+            display=True
         )

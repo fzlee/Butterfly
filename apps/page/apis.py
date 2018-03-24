@@ -127,3 +127,37 @@ class CommentViewSets(viewsets.GenericViewSet, XListModelMixin):
     def destroy(self, request, pk):
         request.comment.delete()
         return XResponse()
+
+
+class LinkViewSets(viewsets.GenericViewSet, XListModelMixin):
+
+    lookup_field = "pk"
+
+    @login_required
+    def list(self, request):
+        queryset = PageService.get_links().order_by("-pk")
+        return self.flexible_list(
+            request,
+            queryset,
+            serializer_class=PageService.get_serializer_class("link"),
+            pagination=True
+        )
+
+    @validate_request(target="link")
+    @login_required
+    def destroy(self, request, pk):
+        request.link.delete()
+        return XResponse()
+
+    @validate_request(target="link")
+    @login_required
+    def update(self, request, pk):
+        display = request.data.get("display", False)
+        request.link.display = display
+        request.link.save()
+        return XResponse()
+
+    @login_required
+    def create(self, request):
+        PageService.create_link(request.data)
+        return XResponse()

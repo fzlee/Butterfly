@@ -27,6 +27,11 @@ def validate_request(target):
                 request.comment = BasePageService.get_comment(pk=pk)
                 if not request.comment:
                     raise XAPI404Error
+            elif target == "link":
+                pk = kwargs.get("pk")
+                request.link = BasePageService.get_link(pk=pk)
+                if not request.link:
+                    raise XAPI404Error
             else:
                 raise Exception("Unhandled permission check")
             return func(self, request, *args, **kwargs)
