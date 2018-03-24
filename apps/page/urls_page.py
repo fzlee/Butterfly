@@ -10,5 +10,6 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r"^rss", views.LatestEntriesFeed())
+    url(r"^rss", views.LatestEntriesFeed()),
+    url(r"^sitemap.xml", views.SiteMapView.as_view())
 ]
