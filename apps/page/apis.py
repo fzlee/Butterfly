@@ -97,7 +97,7 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
     def comments(self, request, url):
 
         if not request.page.allow_visit:
-            raise XPermissionDenied
+            return XResponse(data=[])
 
         if request.method == "GET":
             if request.page.allow_comment:

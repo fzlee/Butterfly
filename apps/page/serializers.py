@@ -58,9 +58,7 @@ class CommentSerializer(XRoleSerializer):
         fields = [
             "id", "page", "email", "nickname", "content", "to", "create_time"
         ]
-        anonymous_forbidden_fields = [
-            "email"
-        ]
+        anonymous_forbidden_fields = []
 
 
 class MediaSerializer(XRoleSerializer):
