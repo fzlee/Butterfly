@@ -99,12 +99,15 @@ migrations/
 # django setting module
 settings/__init__.py
 settings/app_setting.py
+settings/deployment_setting.py
+fabfile.py
 static/
 media/
 certs/
 scripts/*.sh
+logs/
+media/
 db.sqlite3
 
 # gitbook stuff
-_book/
 node_modules/
