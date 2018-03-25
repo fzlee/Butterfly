@@ -77,6 +77,7 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
     @validate_request(target="page")
     @login_required
     def destroy(self, request, url):
+        PageService.delete_page_tags(request.page)
         request.page.delete()
         return XResponse()
 
@@ -123,6 +124,7 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
         page = PageService.get_page(pk=data["id"])
         data.pop("id")
         page = PageService.update_page(page, data)
+        PageService.update_page_tags(page)
 
         serializer = PageService.get_serializer(name="page", instance=page)
         return XResponse(data=serializer.data)

@@ -10,17 +10,16 @@
 """
 import os
 
-from django.db import connection
+from django.db import connection, transaction
 from django.conf import settings
 
 from .base_services import BasePageService
-from .models import Page, Comment, Link, Media
+from .models import Page, Comment, Link, Media, Tag
 from settings import app_setting
 from helpers import cached, generate_media_id
 
 
 class PageService(BasePageService):
-    pass
 
     @classmethod
     def generate_sidebar(cls):
@@ -132,6 +131,21 @@ class PageService(BasePageService):
             display=True
         )
 
+    @classmethod
+    def update_page_tags(cls, page):
+        tags = page.tags.split(",")
+        tags = [i for i in tags if i]
+        with transaction.atomic():
+            Tag.objects.filter(page_id=page.pk).delete()
+            for tag in tags:
+                Tag.objects.create(
+                    page=page,
+                    name=tag
+                )
+
+    @classmethod
+    def delete_page_tags(cls, page):
+        Tag.objects.filter(page_id=page.pk).delete()
 
     @classmethod
     def create_media(cls, file, filename, content_type):

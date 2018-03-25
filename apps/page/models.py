@@ -94,7 +94,7 @@ class Comment(XModel):
 class Tag(XModel):
 
     name = models.CharField(max_length=64)
-    post = models.ForeignKey(Page, related_name="sub_tags", on_delete=models.CASCADE)
+    page = models.ForeignKey(Page, related_name="sub_tags", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "tag"
