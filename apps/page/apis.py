@@ -12,7 +12,7 @@ from rest_framework.decorators import list_route, detail_route
 
 from apps.core.responses import XResponse
 from apps.core.viewsets import XListModelMixin
-from apps.core.exceptions import XPermissionDenied, XAPI404Error
+from apps.core.exceptions import XAPI404Error
 from apps.user.permissions import login_required
 from .services import PageService
 from .permissions import validate_request
@@ -126,6 +126,21 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
 
         serializer = PageService.get_serializer(name="page", instance=page)
         return XResponse(data=serializer.data)
+
+    @list_route()
+    def search(self, request):
+        tagname = request.query_params.get("tagname", "")
+        tagname = "," + tagname + ","
+
+        pages = PageService.get_pages(allow_visit=True).filter(
+            tags__icontains=tagname
+        )
+        return self.flexible_list(
+            request,
+            pages,
+            pagination=True,
+            serializer_class=PageService.get_serializer_class("page_preview")
+        )
 
 
 class CommentViewSets(viewsets.GenericViewSet, XListModelMixin):
