@@ -6,6 +6,7 @@
 
 """
 import os
+import re
 
 import markdown2
 from django.db import models
@@ -17,8 +18,8 @@ from apps.core.models import XModel
 class Page(XModel):
     url = models.CharField(max_length=128, unique=True)
     title = models.CharField(max_length=256)
-    raw_content = models.TextField()
     content = models.TextField()
+    content_digest = models.TextField()
     keywords = models.CharField(max_length=256, default="")
     metacontent = models.CharField(max_length=256, default="")
     create_time = models.DateTimeField(auto_now_add=True)
@@ -38,6 +39,8 @@ class Page(XModel):
     is_original = models.BooleanField(default=True)
     num_lookup = models.IntegerField(default=0)
 
+    cleaner = re.compile("<.*?>")
+
     class Meta:
         db_table = "page"
 
@@ -48,14 +51,17 @@ class Page(XModel):
 
         return markdown2.markdown(self.content)
 
-    @property
     def preview(self):
-        if self.url == "reverse-engineering-on-wechat":
-            print(self.need_key)
         if self.need_key:
             return ""
         else:
-            return self.content[:200]
+            return self.content_digest
+
+    def save_digest(self):
+        content = markdown2.markdown(self.content)
+        content = re.sub(self.cleaner, '', content)
+        self.content_digest = content[:200]
+        self.save(update_fields=["content_digest"])
 
 
 class Link(XModel):

@@ -80,6 +80,8 @@ class PageService(BasePageService):
         if not page.tags.endswith(","):
             page.tags = page.tags + ","
 
+        cls.update_page_tags(page)
+        page.save_digest()
         page.save()
         return page
 
@@ -91,6 +93,8 @@ class PageService(BasePageService):
         if not page.tags.endswith(","):
             page.tags = page.tags + ","
 
+        cls.update_page_tags(page)
+        page.save_digest()
         page.save()
         return page
 
