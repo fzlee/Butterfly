@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
+"""
+    app_setting.py
+    ~~~~~~~~~~
+
+"""
+DEFAULT_TOKEN_VALID_DAYS = 7
+BLOG_ANNOUNCEMENT_URL = "2017-front-end-guide"
