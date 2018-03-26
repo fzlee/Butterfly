@@ -25,7 +25,7 @@ class PagePreviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
         fields = [
-            "url", "title", "tags", "preview", "need_key"
+            "url", "title", "tags", "preview", "need_key", "create_time"
         ]
 
 class PageMetaSerializer(serializers.ModelSerializer):
@@ -33,7 +33,8 @@ class PageMetaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
         fields = [
-            "url", "title", "tags", "content", "create_time", "need_key", "allow_comment"
+            "url", "title", "tags", "content", "create_time", "need_key",
+            "allow_comment"
         ]
 
 
