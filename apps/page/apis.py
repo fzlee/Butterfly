@@ -109,7 +109,8 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
                 return XResponse(data=[])
 
         if request.page.allow_comment:
-            PageService.create_comment(request.page, request.data, get_client_ip(request))
+            comment = PageService.create_comment(request.page, request.data, get_client_ip(request))
+            comment = PageService.send_reply_comment_email(comment)
         return XResponse()
 
     @list_route(methods=["put"])
@@ -197,6 +198,7 @@ class LinkViewSets(viewsets.GenericViewSet, XListModelMixin):
         PageService.create_link(request.data)
         return XResponse()
 
+
 class MediaViewSets(viewsets.GenericViewSet, XListModelMixin):
 
     @login_required
@@ -227,7 +229,7 @@ class MediaViewSets(viewsets.GenericViewSet, XListModelMixin):
         path = media.get_filepath()
         try:
             os.remove(path)
-        except:
+        except Exception:
             pass
 
         media.delete()

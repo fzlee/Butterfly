@@ -12,11 +12,9 @@ from django.contrib.syndication.views import Feed
 from django.shortcuts import render
 from rest_framework.views import APIView
 
+from helpers import generate_external_url
 from apps.page.services import PageService
 
-
-def generate_external_url(url):
-        return settings.BASE_URL + "articles/" + url
 
 class LatestEntriesFeed(Feed):
     title = settings.BLOG_NAME
@@ -66,11 +64,9 @@ class SiteMapView(APIView):
                 "priority": 0.7
             })
 
-
         return render(
             request,
             "sitemap.xml",
             context={"pages": records},
             content_type="application/xml"
         )
-

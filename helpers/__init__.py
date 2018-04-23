@@ -8,6 +8,7 @@
 import random
 import string
 from datetime import datetime, timedelta
+from django.conf import settings
 
 
 def generate_id(total_size=6, chars=string.ascii_lowercase + string.digits, header=""):
@@ -32,8 +33,11 @@ class cached(object):
     def __call__(self, func):
         def inner(*args, **kwargs):
             max_age = kwargs.get('max_age', self.default_max_age)
-            if not max_age or func not in self.cached_function_responses or (datetime.now() - self.cached_function_responses[func]['fetch_time'] > max_age):
-                if 'max_age' in kwargs: del kwargs['max_age']
+            if not max_age or func not in self.cached_function_responses or (
+                datetime.now() - self.cached_function_responses[func]['fetch_time'] > max_age
+            ):
+                if 'max_age' in kwargs:
+                    del kwargs['max_age']
                 res = func(*args, **kwargs)
                 self.cached_function_responses[func] = {'data': res, 'fetch_time': datetime.now()}
             return self.cached_function_responses[func]['data']
@@ -69,3 +73,7 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+def generate_external_url(url):
+        return settings.BASE_URL + "articles/" + url

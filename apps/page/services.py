@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-
-
-
 # coding: utf-8
 """
     services.py
@@ -13,6 +10,7 @@ import os
 from django.db import connection, transaction
 from django.conf import settings
 
+from helpers import generate_external_url
 from .base_services import BasePageService
 from .models import Page, Comment, Link, Media, Tag
 from settings import app_setting
@@ -115,7 +113,7 @@ class PageService(BasePageService):
             comment = None
             to = ""
 
-        Comment.objects.create(
+        return Comment.objects.create(
             page=page,
             email=data.get("email", "").strip(),
             nickname=data.get("nickname").strip(),
@@ -125,6 +123,24 @@ class PageService(BasePageService):
             ip=ip,
             to=to
         )
+
+    @classmethod
+    def send_reply_comment_email(cls, comment):
+        if not app_setting.SMTP_ENABLED:
+            return
+        parent_comment = comment.parent_comment
+        if not parent_comment or not parent_comment.email:
+            return
+        page = comment.page
+
+        client = cls.get_email_client()
+        to_user = parent_comment.email
+        title = "{}在<<{}>>回复了您".format(comment.nickname, page.title)
+        content = """评论内容:{}\n文章地址:{}""".format(
+            comment.content,
+            generate_external_url(page.url)
+        )
+        cls.send_email(client, to_user, title, content)
 
     @classmethod
     def create_link(cls, data):

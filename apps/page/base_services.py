@@ -5,7 +5,11 @@
     ~~~~~~~~~~
 
 """
+import smtplib
+from email.mime.text import MIMEText
+
 from apps.core.services import BaseService
+from settings import app_setting
 from .models import Page, Comment, Link, Tag, Media
 from .serializers import (
     PageSerializer, LinkSerializer, CommentSerializer,
@@ -34,3 +38,23 @@ class BasePageService(BaseService):
     _INTERNAL_FILTERS = {
         "page": PageFilter
     }
+
+    @classmethod
+    def get_email_client(cls):
+        if not app_setting.SMTP_ENABLED:
+            return None
+
+        client = smtplib.SMTP_SSL(
+            host=app_setting.SMTP_HOST,
+            port=app_setting.SMTP_PORT
+        )
+        client.login(app_setting.SMTP_USERNAME, app_setting.SMTP_PASSWORD)
+        return client
+
+    @classmethod
+    def send_email(cls, client, to_user, title, content):
+        message = MIMEText(content)
+        message["Subject"] = title
+        message["To"] = to_user
+        message["From"] = app_setting.SMTP_USERNAME
+        return client.send_message(message)
