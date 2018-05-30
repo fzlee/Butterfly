@@ -110,8 +110,8 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
 
         if request.page.allow_comment:
             comment = PageService.create_comment(request.page, request.data, get_client_ip(request))
-            comment = PageService.send_reply_comment_email(comment)
-            comment = PageService.send_admin_comment_email(comment)
+            PageService.send_reply_comment_email(comment)
+            PageService.send_admin_comment_email(comment)
         return XResponse()
 
     @list_route(methods=["put"])
