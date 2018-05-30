@@ -143,6 +143,21 @@ class PageService(BasePageService):
         cls.send_email(client, to_user, title, content)
 
     @classmethod
+    def send_admin_comment_email(cls, comment):
+        """
+        notify admin with new comment
+        """
+        page = comment.page
+        client = cls.get_email_client()
+        to_user = app_setting.ADMIN_EMAIL
+        title = "{}在<<{}>>留言".format(comment.nickname, page.title)
+        content = """评论内容:{}\n文章地址:{}""".format(
+            comment.content,
+            generate_external_url(page.url)
+        )
+        cls.send_email(client, to_user, title, content)
+
+    @classmethod
     def create_link(cls, data):
         Link.objects.create(
             name=data["name"],
