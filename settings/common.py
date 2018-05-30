@@ -146,4 +146,66 @@ REST_FRAMEWORK = {
 }
 
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
+        },
+        "simple": {
+            "format": "%(levelname)s %(message)s"
+        },
+        "django.server": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "[%(server_time)s] %(levelname)s: %(message)s",
+        }
+    },
+    "handlers": {
+        "django": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/error.log"),
+            "formatter": "django.server"
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "django.server",
+        },
+        "apps": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/apps.log"),
+            "formatter": "django.server"
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["django"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "django.server": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "null": {
+            "level": "DEBUG",
+            "class": "django.utils.log.NullHandler",
+        },
+        "apps": {
+            "handlers": ["apps"],
+            "level": "DEBUG",
+            "propagate": True,
+        }
+    }
+}
+
 MEDIA_ROOT = BASE_DIR + "/media"
