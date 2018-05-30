@@ -151,7 +151,9 @@ class PageService(BasePageService):
         client = cls.get_email_client()
         to_user = app_setting.ADMIN_EMAIL
         title = "{}在<<{}>>留言".format(comment.nickname, page.title)
-        content = """评论内容:{}\n文章地址:{}""".format(
+        content = """邮件地址:{}\n网站地址:{}\n评论内容:{}\n文章地址:{}""".format(
+            comment.email,
+            comment.website,
             comment.content,
             generate_external_url(page.url)
         )
