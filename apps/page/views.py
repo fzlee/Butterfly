@@ -28,6 +28,8 @@ class LatestEntriesFeed(Feed):
         return article.title
 
     def item_description(self, article):
+        if article.need_key:
+            return "需要输入密码访问"
         return article.html_content
 
     # item_link is only needed if NewsItem has no get_absolute_url method.
@@ -42,7 +44,7 @@ class SiteMapView(APIView):
         """
         # user model postlist
         records = []
-        pages = PageService.get_pages(allow_visit=True).order_by("-pk")
+        pages = PageService.get_pages(allow_visit=True, need_key=False).order_by("-pk")
 
         url = settings.BASE_URL
         if pages:

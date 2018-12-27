@@ -5,4 +5,4 @@ markdown2==2.3.5
 gunicorn
 fabric3
 
-mysqlclient==1.3.12
+mysqlclient
