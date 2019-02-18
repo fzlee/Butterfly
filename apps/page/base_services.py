@@ -6,6 +6,7 @@
 
 """
 import smtplib
+import threading
 from email.mime.text import MIMEText
 
 from apps.core.services import BaseService
@@ -53,8 +54,17 @@ class BasePageService(BaseService):
 
     @classmethod
     def send_email(cls, client, to_user, title, content):
+        """
+        sendemail with subprocesses, this is not recommaneded on high concurrent webservices though
+        """
         message = MIMEText(content)
         message["Subject"] = title
         message["To"] = to_user
         message["From"] = app_setting.SMTP_USERNAME
-        return client.send_message(message)
+        client = cls.get_email_client()
+        client.send_message(message)
+
+    @classmethod
+    def send_email_async(cls, to_user, title, content):
+        t = threading.Thread(target=cls.send_email, args=(cls, to_user, title, content))
+        t.start()

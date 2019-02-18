@@ -133,14 +133,13 @@ class PageService(BasePageService):
             return
         page = comment.page
 
-        client = cls.get_email_client()
         to_user = parent_comment.email
         title = "{}在<<{}>>回复了您".format(comment.nickname, page.title)
         content = """评论内容:{}\n文章地址:{}""".format(
             comment.content,
             generate_external_url(page.url)
         )
-        cls.send_email(client, to_user, title, content)
+        cls.send_email_async(to_user, title, content)
 
     @classmethod
     def send_admin_comment_email(cls, comment):
@@ -148,7 +147,6 @@ class PageService(BasePageService):
         notify admin with new comment
         """
         page = comment.page
-        client = cls.get_email_client()
         to_user = app_setting.ADMIN_EMAIL
         title = "{}在<<{}>>留言".format(comment.nickname, page.title)
         content = """邮件地址:{}\n网站地址:{}\n评论内容:{}\n文章地址:{}""".format(
@@ -157,7 +155,7 @@ class PageService(BasePageService):
             comment.content,
             generate_external_url(page.url)
         )
-        cls.send_email(client, to_user, title, content)
+        cls.send_email_async(to_user, title, content)
 
     @classmethod
     def create_link(cls, data):
