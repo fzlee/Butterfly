@@ -60,6 +60,7 @@ class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
             serializer = PageService.get_serializer(name="page_meta", instance=request.page)
             data = serializer.data
             if request.page.need_key:
+                data.pop("html", None)
                 data.pop("content", None)
             return XResponse(data=data)
 
