@@ -21,6 +21,7 @@ from helpers import get_client_ip
 
 class ArticleViewSets(viewsets.GenericViewSet, XListModelMixin):
     lookup_field = "url"
+    serializer_class = PageService.get_serializer_class("page_meta")
 
     @login_required
     def list(self, request):

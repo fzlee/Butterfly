@@ -79,7 +79,7 @@ class PageService(BasePageService):
         else:
             page.html = markdown2.markdown(
                 page.content,
-                extras=["fenced-code-blocks"]
+                extras=["fenced-code-blocks", "tables"]
             )
 
         if not page.tags.startswith(","):
