@@ -1,0 +1,8 @@
+"""
+    config.py
+    ~~~~~~~~~~
+
+"""
+REMOTE_PROJECT_PATH = "/home/fzlee/Workspace/"
+REMOTE_PROJECT_VIRTUAL_ENV = "/home/fzlee/.virtualenvs/butterfly"
+REMOTE_REQUIREMENTS_PATH = "/home/fzlee/Workspace/Butterfly/requirements.txt"

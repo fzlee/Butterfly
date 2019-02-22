@@ -111,3 +111,4 @@ db.sqlite3
 
 # gitbook stuff
 node_modules/
+fab_config.py
