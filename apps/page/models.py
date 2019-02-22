@@ -50,7 +50,7 @@ class Page(XModel):
         if self.editor == "html":
             return self.content
 
-        return markdown2.markdown(self.content, extras=["febced-code-blocks", "tables"])
+        return markdown2.markdown(self.content, extras=["febced-code-blocks", "tables", "cuddled-lists"])
 
     def preview(self):
         if self.need_key:
