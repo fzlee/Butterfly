@@ -28,13 +28,14 @@ class PagePreviewSerializer(serializers.ModelSerializer):
             "url", "title", "tags", "preview", "need_key", "create_time"
         ]
 
+
 class PageMetaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Page
         fields = [
-            "url", "title", "tags", "content", "create_time", "need_key",
-            "allow_comment", "is_original"
+            "url", "title", "tags", "create_time", "need_key",
+            "allow_comment", "is_original", "html"
         ]
 
 
@@ -52,7 +53,7 @@ class LinkSerializer(XRoleSerializer):
 
 
 class CommentSerializer(XRoleSerializer):
-    page =  NestedPageSerializer(required=False)
+    page = NestedPageSerializer(required=False)
 
     class Meta:
         model = Comment

@@ -7,6 +7,7 @@
 """
 import os
 
+import markdown2
 from django.db import connection, transaction
 from django.conf import settings
 
@@ -72,6 +73,14 @@ class PageService(BasePageService):
 
         for key, value in data.items():
             setattr(page, key, value)
+
+        if page.editor == "html":
+            page.html = page.content
+        else:
+            page.html = markdown2.markdown(
+                page.content,
+                extras=["fenced-code-blocks"]
+            )
 
         if not page.tags.startswith(","):
             page.tags = "," + page.tags

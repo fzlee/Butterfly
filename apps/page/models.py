@@ -38,6 +38,7 @@ class Page(XModel):
     allow_comment = models.BooleanField(default=True)
     is_original = models.BooleanField(default=True)
     num_lookup = models.IntegerField(default=0)
+    html = models.TextField(default="")
 
     cleaner = re.compile("<.*?>")
 
@@ -49,7 +50,7 @@ class Page(XModel):
         if self.editor == "html":
             return self.content
 
-        return markdown2.markdown(self.content)
+        return markdown2.markdown(self.content, extras=["febced-code-blocks"])
 
     def preview(self):
         if self.need_key:
@@ -58,8 +59,7 @@ class Page(XModel):
             return self.content_digest
 
     def save_digest(self):
-        content = markdown2.markdown(self.content)
-        content = re.sub(self.cleaner, '', content)
+        content = re.sub(self.cleaner, '', self.html)
         self.content_digest = content[:200]
         self.save(update_fields=["content_digest"])
 
