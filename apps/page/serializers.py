@@ -35,7 +35,7 @@ class PageMetaSerializer(serializers.ModelSerializer):
         model = Page
         fields = [
             "url", "title", "tags", "create_time", "need_key",
-            "allow_comment", "is_original", "html"
+            "allow_comment", "is_original", "content"
         ]
 
 
