@@ -28,7 +28,13 @@ class LoginView(APIView):
         if not user or not user.check_password(password):
             return XResponse(result=XResult(code=codes.UNKNOWN_USER_PASSWORD))
 
-        response = XResponse(success=True, data={})
+        response = XResponse(
+            success=True, data={
+                "uid": user.uid,
+                "nickname": user.nickname,
+                "role": user.role
+            }
+        )
         UserService.set_login_credential_to_cookie(response, user)
         return response
 

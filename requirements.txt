@@ -5,7 +5,9 @@ gunicorn
 fabric3
 
 markdown==3.0.1
+markdown2==2.3.8
 pygments==2.3.1
 
+# LDFLAGS=-L/usr/local/opt/openssl/lib pip install mysqlclient
 mysqlclient
 bpython
